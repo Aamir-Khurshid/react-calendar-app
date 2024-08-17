@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { EventProvider } from './context/EventContext';
+import Calendar from './components/Calendar';
+import EventForm from './components/EventForm';
+import EventDetailsModal from './components/EventDetailsModal';
+import EventList from './components/EventList';
+import styled from 'styled-components';
+
+const AppWrapper = styled.div`
+  padding: 20px;
+  font-family: Arial, sans-serif;
+`;
 
 function App() {
+  const [showForm, setShowForm] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <EventProvider>
+      <Router>
+        <AppWrapper>
+          <h1>React Calendar App</h1>
+          <button onClick={() => setShowForm(true)}>Add Event</button>
+          {showForm && <EventForm onClose={() => setShowForm(false)} />}
+          {showDetails && <EventDetailsModal onClose={() => setShowDetails(false)} />}
+          <Routes>
+            <Route path="/" element={<Calendar />} />
+            <Route path="/events" element={<EventList />} />
+          </Routes>
+        </AppWrapper>
+      </Router>
+    </EventProvider>
   );
 }
 
